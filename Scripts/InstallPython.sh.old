@@ -1,0 +1,12 @@
+#!/bin/bash
+
+PYMOD_DIR=$(pwd)/pythonModules
+
+mkdir ${PYMOD_DIR} 
+PYTHONPATH=${PYTHONPATH}${PYMOD_DIR}
+
+easy_install --install-dir ${PYMOD_PY} intervaltree
+
+echo "PYTHONPATH=${PYTHONPATH}${PYMOD_DIR}:" >> ${HOME}/.bash_profile
+
+source ${HOME}/.bash_profile

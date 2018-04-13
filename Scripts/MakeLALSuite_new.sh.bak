@@ -1,0 +1,43 @@
+#!/bin/bash
+# Assumes we have cloned lalsuite and are in the directory above it
+
+CVSROOT=:pserver:anonymous@gravity.phys.uwm.edu:2402/usr/local/cvs/lscsoft
+MAIN=${PWD}
+MYFLAGS="--prefix=${MAIN}/production --disable-debug CFLAGS=-O2 --disable-lalframe --disable-lalmetaio --disable-lalsimulation --disable-lalburst --disable-lalinspiral --disable-lalinference --disable-lalstochastic"
+
+if ! [ -e 'lalsuite' ]; then
+  git clone git://ligo-vcs.phys.uwm.edu/lalsuite.git
+  touch ~/.nolscsoft-lalsuite
+fi
+
+
+########### This version supports deprecated options, so should be stable for a while... ##########
+# Also supports lalapps_LatticeTilingCount 
+git checkout a6dd2d8cbfeb2fc5420a9af26ad1668c3b5fcac0 
+
+cd lalsuite/lal
+./00boot
+mkdir -p production
+cd production
+../configure ${MYFLAGS}
+make
+make install
+source ${MAIN}/production/etc/lal-user-env.sh
+
+cd ../../lalpulsar
+./00boot
+mkdir -p production
+cd production
+../configure ${MYFLAGS}
+make
+make install
+source ${MAIN}/production/etc/lalpulsar-user-env.sh
+
+cd ../../lalapps
+./00boot
+mkdir -p production
+cd production
+../configure ${MYFLAGS}
+make
+
+make install
